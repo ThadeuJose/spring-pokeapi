@@ -1,2 +1,2 @@
 # spring-pokeapi
-API created using Spring and Kong
+API created using Spring and Unirest
