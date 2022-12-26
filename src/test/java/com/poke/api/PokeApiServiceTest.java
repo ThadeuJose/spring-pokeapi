@@ -2,6 +2,7 @@ package com.poke.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -41,5 +42,12 @@ public class PokeApiServiceTest {
         assertEquals(96, expected.getMove().size());
         List<String> moves = expected.getMove();
         assertThat(moves).contains("pay-day", "mega-punch", "thunder-punch");
+    }
+
+    @Test
+    public void shouldReturnNull() {
+        PokeApiService pokeApiService = new PokeApiService();
+        Optional<Pokemon> pokemon = pokeApiService.get("127UnKnow");
+        assertFalse(pokemon.isPresent());
     }
 }

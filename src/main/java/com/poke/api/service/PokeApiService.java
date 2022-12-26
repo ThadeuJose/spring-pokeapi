@@ -10,6 +10,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import com.poke.api.model.Pokemon;
 
+import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
 @Service
@@ -23,14 +24,20 @@ public class PokeApiService {
     }
 
     public Optional<Pokemon> get(String name) {
-        String json = Unirest.get("/{name}").routeParam("name", name).asString().getBody();
-        Object document = jsonProvider.parse(json);
+        Pokemon pokemon = null;
+        HttpResponse<String> request = Unirest.get("/{name}").routeParam("name", name).asString();
 
-        String pokemonName = JsonPath.read(document, "$.name");
-        String imageUrl = JsonPath.read(document, "$.sprites.other.official-artwork.front_default");
-        List<String> moves = JsonPath.read(document, "$.moves[*].move.name");
+        if (request.isSuccess()) {
+            String json = request.getBody();
+            Object document = jsonProvider.parse(json);
 
-        Pokemon pokemon = new Pokemon(pokemonName, imageUrl, moves);
+            String pokemonName = JsonPath.read(document, "$.name");
+            String imageUrl = JsonPath.read(document, "$.sprites.other.official-artwork.front_default");
+            List<String> moves = JsonPath.read(document, "$.moves[*].move.name");
+
+            pokemon = new Pokemon(pokemonName, imageUrl, moves);
+        }
+
         return Optional.ofNullable(pokemon);
     }
 
